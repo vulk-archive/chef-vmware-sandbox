@@ -36,6 +36,7 @@ vname = 'vdemo8' + rand.to_s
 template = public_catalog.catalog_items.get_by_name('CentOS64-64bit')
 net = conn.organizations.first.networks.find { |n| n if n.name.match("routed$")  }
 template.instantiate(vname, vdc_id: vdc.id, network_id: net.id, description: vname + ' Desc')
+
 vapp_new = vdc.vapps.get_by_name(vname)
 vm_new = vapp_new.vms.first
 
@@ -79,13 +80,15 @@ conn.process_task(nc_task)
 ## Must be done before first power on. Monkeys can't go edit the Linux box later
 ##
 c=vm_new.customization
-#c.admin_password_auto = false # auto
+c.admin_password_auto = false # auto
 # c.admin_password_auto = true # auto
-#c.admin_password = ENV['VCLOUD_VM_ADMIN_PASSWORD']
+c.admin_password = ENV['VCLOUD_VM_ADMIN_PASSWORD']
 c.reset_password_required = false
-c.customization_script = "sed -ibak 's/^PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config"
+#c.customization_script = "sed -ibak 's/^PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config"
+c.script = "#!/bin/sh\ntouch /tmp/wedidit\nsed -ibak 's/^PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config"
 #c.script = 'date > /tmp/bootlog ` ; echo custom boot >> /tmp/bootlog`'
-c.computer_name = 'DEV-' + Time.now.to_s.gsub(" ","_")
+c.computer_name = 'DEV-' + Time.now.to_s.gsub(" ","-").gsub(":","-")
+c.enabled = true
 
 c.save
 
