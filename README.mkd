@@ -1,0 +1,8 @@
+## VMWare cloud sample code
+
+This repo contains code for VCHS explorations.
+
+Setup your .env (see [.env-example](.env-example) with your creds
+
+
+
