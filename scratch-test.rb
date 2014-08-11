@@ -1,3 +1,6 @@
+# NOTE: This code is for exploring vchs and not meant to be run as a whole script
+#
+
 require 'fog'
 require 'dotenv'
 
@@ -31,8 +34,11 @@ vapp_good.network_config
 
 # create new system (just like a physical system was built for you)
 # 
-vname = 'vdemo8' + rand.to_s
+vname = 'vdemo10-' + rand.to_s
+
+## NOTE: ubuntu seems to not use customizaton (script nor setting password) also no ssh with password
 #template = public_catalog.catalog_items.get_by_name('Ubuntu Server 12.04 LTS (amd64 20140619)')
+#
 template = public_catalog.catalog_items.get_by_name('CentOS64-64bit')
 net = conn.organizations.first.networks.find { |n| n if n.name.match("routed$")  }
 template.instantiate(vname, vdc_id: vdc.id, network_id: net.id, description: vname + ' Desc')
@@ -87,6 +93,8 @@ c.reset_password_required = false
 #c.customization_script = "sed -ibak 's/^PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config"
 c.script = "#!/bin/sh\ntouch /tmp/wedidit\nsed -ibak 's/^PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config"
 #c.script = 'date > /tmp/bootlog ` ; echo custom boot >> /tmp/bootlog`'
+#
+# system name via hostname
 c.computer_name = 'DEV-' + Time.now.to_s.gsub(" ","-").gsub(":","-")
 c.enabled = true
 
@@ -98,8 +106,11 @@ vm_new.power_on
 # Refresh attributes for vm object to look at in IRB
 vm_new.reload
 
+# Show all the good stuff
 vm_new.network
 vm_new.customization.admin_password
 vm_new.status
 vm_new.ip_address
 vm_new.customization.admin_password
+
+
