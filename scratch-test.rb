@@ -8,7 +8,7 @@ Dotenv.load unless ENV['VCLOUD_DIRECTOR_USERNAME']
 
 
 conn = Fog::Compute::VcloudDirector.new(
-  :vcloud_director_username => ENV['VCLOUD_DIRECTOR_USERNAME'],
+  :vcloud_director_username => ENV['VCLOUD_DIRECTOR_USERNAME']+'@'+ENV['VCLOUD_DIRECTOR_ORG'],
   :vcloud_director_password => ENV['VCLOUD_DIRECTOR_PASSWORD'],
   :vcloud_director_host => ENV['VCLOUD_DIRECTOR_HOST'],
   :vcloud_director_api_version => '5.6')
